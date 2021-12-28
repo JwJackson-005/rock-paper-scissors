@@ -51,10 +51,54 @@ function playRound(playerSelection, computerSelection) {
     }
 }
 
-function game() {
-    for (let i = 0; i < 5; i++) {
-        console.log(playRound(prompt("Choose Rock/Paper/Scissors"), computerPlay()));
+const rockButton = document.querySelector('#rockButton');
+const paperButton = document.querySelector('#paperButton');
+const scissorsButton = document.querySelector('#scissorsButton');
+const resultText = document.querySelector('#result');
+const winnerText = document.querySelector('#winner');
+
+rockButton.addEventListener('click', buttonSelected);
+paperButton.addEventListener('click', buttonSelected);
+scissorsButton.addEventListener('click', buttonSelected);
+
+let playerScore = 0;
+let computerScore = 0;
+
+setScore(playerScore,computerScore);
+
+function buttonSelected(e) {
+    let result = playRound(e.target.textContent, computerPlay());
+    processResult(result);
+    resultText.textContent = result;
+    if (isWinner()) {
+        cleanUp();
     }
 }
 
-game();
+function cleanUp() {
+    playerScore === 5 ? winnerText.textContent = 'You won!!!' : winnerText.textContent = 'You lost!!!';
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.remove();
+    })
+}
+
+function isWinner() {
+    return (playerScore === 5 || computerScore === 5);
+}
+
+function setScore(player, computer) {
+    const scores = document.querySelectorAll('div');
+    scores[0].textContent = `Player Score: ${player}`;
+    scores[1].textContent = `Computer Score: ${computer}`;
+}
+
+function processResult(resultString) {
+    if (resultString.includes('win')) {
+        playerScore++;
+    }
+    else if (resultString.includes('lose')) {
+        computerScore++;
+    }
+    setScore(playerScore, computerScore);
+}
